@@ -1,0 +1,6 @@
+beetil_api_token: 'YOUR_BEETIL_API_TOKEN'
+
+# Base64 encoded string of username:password
+# To generate Base64.encode64('username:password').delete("\r\n")
+harvest_basic: 'HARVEST_BASIC_AUT'
+harvest_subdomain: 'HARVEST_SUBDOMAIN'

@@ -1,22 +1,18 @@
-require 'rubygems'
-require 'bundler/setup'
-
-require 'granary'
-
-require 'beetil'
-
-require './scarab'
+# -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
+require 'scarab'
 
 credentials = Scarab::Credentials.new(YAML.load File.read('scarab.yml'))
 
 Beetil.configure do |config|
-  # Formerly config.base_url  = "https://youdo.beetil.com/external_api/v1"
+  # Formerly - config.base_url  = "https://youdo.beetil.com/external_api/v1"
   config.base_url = "https://api.gotoassist.com/desk/external_api/v1"
   config.api_token = credentials.beetil_api_token
 end
 
-# Base64 encoded string of username:password
 basic = 'Basic ' + credentials.harvest_basic
+api = Granary::API.new(:authorization => basic, :subdomain => credentials.harvest_subdomain)
+
 
 puts "Select start_date (0 to exit): "
 (0..6).to_a.reverse.each {|d| puts "[#{d+1}] : " +  (Date.today - d).strftime("%Y-%m-%d %a")}
@@ -32,12 +28,9 @@ when 1, 2, 3, 4, 5, 6, 7, 8
 end
 
 
-project_id = '718178'  #YouDo Permanent   #TODO extract
-api = Granary::API.new(:authorization => basic, :subdomain => credentials.harvest_subdomain)
-
+project_id = '718178'           # YouDo Permanent   #TODO extract
 from_date = start_date          # Date.civil(2012, 3, 23).strftime("%Y%m%d")
 to_date =   Date.today - 1      # yesterday most common case
-
 time_entries = api.project_time(project_id, from_date, to_date)
 
 tt = time_entries.map {|t| Granary::TimeEntry.new t[:day_entry] }
