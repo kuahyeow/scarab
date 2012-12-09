@@ -28,7 +28,7 @@ when 1, 2, 3, 4, 5, 6, 7, 8
 end
 
 
-project_id = '718178'           # YouDo Permanent   #TODO extract
+project_id = credentials.harvest_project_id
 from_date = start_date          # Date.civil(2012, 3, 23).strftime("%Y%m%d")
 to_date =   Date.today - 1      # yesterday most common case
 time_entries = api.project_time(project_id, from_date, to_date)
