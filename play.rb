@@ -22,15 +22,19 @@ raise "not a valid input" unless %w(0 1 2 3 4 5 6 7 8).include?(input)
 case input.to_i
 when 0
   exit
-when 1, 2, 3, 4, 5, 6, 7, 8
+when 1
   start_date = Date.today - (input.to_i - 1)
+  end_date   = Date.today
+when 2, 3, 4, 5, 6, 7, 8
+  start_date = Date.today - (input.to_i - 1)
+  end_date = Date.today - 1  # yesterday most common case
   puts
 end
 
 
 project_id = credentials.harvest_project_id
 from_date = start_date          # Date.civil(2012, 3, 23).strftime("%Y%m%d")
-to_date =   Date.today - 1      # yesterday most common case
+to_date   = end_date
 time_entries = api.project_time(project_id, from_date, to_date)
 
 tt = time_entries.map {|t| Granary::TimeEntry.new t[:day_entry] }
