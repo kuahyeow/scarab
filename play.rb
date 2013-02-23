@@ -40,9 +40,19 @@ time_entries = api.project_time(project_id, from_date, to_date)
 tt = time_entries.map {|t| Granary::TimeEntry.new t[:day_entry] }
 puts tt.map {|t| "#{t.hours} hours spent at #{t.spent_at} with notes #{t.notes}" }
 
+beetil_conn = Faraday.new(:url => 'https://api.gotoassist.com') do |faraday|
+  faraday.use Faraday::Request::JSON          # encode request params as json
+  faraday.request  :url_encoded             # form-encode POST params
+  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+  faraday.use Faraday::Response::Logger       # log the request to STDOUT
+end
+beetil_conn.basic_auth "x", credentials.beetil_api_token
+
 puts "Transmiting to BEETIL...."
 tt.each do |t|
-  Beetil::TimeEntry.create(:entry => t.notes, :hours => t.hours, :description => t.notes, :performed_at => t.spent_at)
+  response = beetil_conn.post '/desk/external_api/v1/time_entries', {:time_entry => {:entry => t.notes, :hours => t.hours, :description => t.notes, :performed_at => t.spent_at}}
+  puts
+  puts response.body
 end
 puts "DONE"
 
