@@ -3,15 +3,16 @@ $:.push File.expand_path("../lib", __FILE__)
 require 'scarab'
 
 credentials = Scarab::Credentials.new(YAML.load File.read('scarab.yml'))
-
-Beetil.configure do |config|
-  config.base_url = "https://deskapi.gotoassist.com/v1"
-  config.api_token = credentials.beetil_api_token
-end
-
 basic = 'Basic ' + credentials.harvest_basic
 api = Granary::API.new(:authorization => basic, :subdomain => credentials.harvest_subdomain)
 
+beetil_conn = Faraday.new(:url => 'https://deskapi.gotoassist.com') do |faraday|
+  faraday.use Faraday::Request::JSON          # encode request params as json
+  faraday.request  :url_encoded               # form-encode POST params
+  faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
+  faraday.use Faraday::Response::Logger       # log the request to STDOUT
+end
+beetil_conn.basic_auth "x", credentials.beetil_api_token
 
 puts "Select start_date (0 to exit): "
 (0..6).to_a.reverse.each {|d| puts "[#{d+1}] : " +  (Date.today - d).strftime("%Y-%m-%d %a")}
@@ -32,20 +33,13 @@ end
 
 
 project_id = credentials.harvest_project_id
-from_date = start_date          # Date.civil(2012, 3, 23).strftime("%Y%m%d")
+from_date = start_date
 to_date   = end_date
 time_entries = api.project_time(project_id, from_date, to_date)
 
 tt = time_entries.map {|t| Granary::TimeEntry.new t[:day_entry] }
 puts tt.map {|t| "#{t.hours} hours spent at #{t.spent_at} with notes #{t.notes}" }
 
-beetil_conn = Faraday.new(:url => 'https://deskapi.gotoassist.com') do |faraday|
-  faraday.use Faraday::Request::JSON          # encode request params as json
-  faraday.request  :url_encoded             # form-encode POST params
-  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-  faraday.use Faraday::Response::Logger       # log the request to STDOUT
-end
-beetil_conn.basic_auth "x", credentials.beetil_api_token
 
 puts "Transmiting to BEETIL...."
 tt.each do |t|

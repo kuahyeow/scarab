@@ -3,8 +3,6 @@ require 'bundler/setup'
 
 require 'granary'
 
-require 'beetil'
-
 module Scarab
   class Credentials
     attr_reader :beetil_api_token, :harvest_basic, :harvest_subdomain

@@ -1,23 +1,10 @@
-GIT
-  remote: git://github.com/kuahyeow/beetil.git
-  revision: f73c5d4bd2fd08edd2532041f072e3d0de13d428
-  specs:
-    beetil (0.0.2)
-      activemodel
-      hashie (~> 1.1.0)
-      httparty (~> 0.8.1)
-
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (3.2.9)
-      activesupport (= 3.2.9)
-      builder (~> 3.0.0)
     activesupport (3.2.9)
       i18n (~> 0.6)
       multi_json (~> 1.0)
     addressable (2.2.6)
-    builder (3.0.4)
     faraday (0.7.6)
       addressable (~> 2.2)
       multipart-post (~> 1.1)
@@ -27,13 +14,8 @@ GEM
     granary (0.0.2)
       faraday (~> 0.7.6)
       faraday_middleware (~> 0.8.4)
-    hashie (1.1.0)
-    httparty (0.8.3)
-      multi_json (~> 1.0)
-      multi_xml
     i18n (0.6.1)
     multi_json (1.4.0)
-    multi_xml (0.5.1)
     multipart-post (1.1.4)
     rack (1.4.1)
 
@@ -41,5 +23,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  beetil!
+  activesupport
   granary
