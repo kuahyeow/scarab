@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require 'scarab'
+require 'yaml'
 
 credentials = Scarab::Credentials.new(YAML.load File.read('scarab.yml'))
 basic = 'Basic ' + credentials.harvest_basic
