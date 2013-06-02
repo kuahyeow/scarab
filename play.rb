@@ -8,10 +8,12 @@ basic = 'Basic ' + credentials.harvest_basic
 api = Granary::API.new(:authorization => basic, :subdomain => credentials.harvest_subdomain)
 
 beetil_conn = Faraday.new(:url => 'https://deskapi.gotoassist.com') do |faraday|
-  faraday.use Faraday::Request::JSON          # encode request params as json
-  faraday.request  :url_encoded               # form-encode POST params
+  faraday.request :json
+  faraday.request :url_encoded
+
+  faraday.response :logger
+
   faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
-  faraday.use Faraday::Response::Logger       # log the request to STDOUT
 end
 beetil_conn.basic_auth "x", credentials.beetil_api_token
 
