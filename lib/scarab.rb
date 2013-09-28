@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'granary'
+require 'json'
 
 module Scarab
   class Credentials
